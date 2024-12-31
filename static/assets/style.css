@@ -1,0 +1,37 @@
+*{
+    border: none;
+    outline: none;
+    box-shadow: none;
+    margin: none;
+    padding: none;
+}
+
+.container{
+    width: 84vw;
+    height: 44vw;
+    display: flex;
+    flex-wrap: wrap;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: calc(50vh - 22vw);
+}
+
+.player, .enemy {
+    width: 4vw;
+    height: 4vw;
+    position: absolute;
+    z-index: 1;
+    top: 0px;
+    left: 0px;
+}
+
+.elem {
+    width: 4vw;
+    height: 4vw;
+    background-repeat: no-repeat;
+    background-size: cover;
+}
+
+.grass{background-image: url('img/grass.jpg');}
+.wall{background-image: url('img/wall.jpg');}
+.box{background-image: url('img/box.svg');}
