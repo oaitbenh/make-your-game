@@ -32,34 +32,15 @@ export class Enemy {
     // }
     // animation
     Animation(direction, Counter) {
-        Counter++;
-        if (Counter/10%1 == 0){
-            this.enemy.src = `/static/assets/img/enemies/${direction ? direction : 'down'}-${+Counter / 10 % 3 + 1}.png`;
-        }
-        if (Counter % 10 == 0) {
-            let enemyPosition = this.enemy.getBoundingClientRect();
-            switch (direction) {
-                case 'up':
-                    this.enemy.style.top = enemyPosition.top - this.speed/6 + 'px';
-                    break;
-                case 'down':
-                    this.enemy.style.top = enemyPosition.top + this.speed/3 + 'px';
-                    break;
-                case 'left':
-                    this.enemy.style.left = enemyPosition.left - this.speed/3 + 'px';
-                    break;
-                case 'right':
-                    this.enemy.style.left = enemyPosition.left + this.speed/3 + 'px';
-                    break;
-                default:
-                    break;
+        if (Counter != 60) {
+            Counter++;
+            if (Counter / 10 % 1 == 0) {
+                this.enemy.src = `/static/assets/img/enemies/${direction ? direction : 'down'}-${+Counter / 10 % 3 + 1}.png`;
             }
+            requestAnimationFrame(this.Animation.bind(this, direction, Counter));
         }
-        if (Counter == 60) {
-            Counter = 0;
-            return;
-        }
-        requestAnimationFrame(this.Animation.bind(this, direction, Counter))
+        Counter = 0;
+        return;
     }
     // can move Method
     can_move() {
@@ -88,10 +69,28 @@ export class Enemy {
     }
     // random movement
     Randomize() {
-        setInterval(() => {
+        setInterval(async () => {
             let to = this.can_move();
             let index = (Math.random() * 10).toFixed() % to.length;
-            window.requestAnimationFrame(this.Animation.bind(this, to[index], Counter));
-        }, 800);
+            let pos = this.enemy.getBoundingClientRect()
+            switch (to[index]) {
+                case 'up':
+                    this.enemy.style.top = pos.top - this.speed + 'px';
+                    break;
+                case 'down':
+                    this.enemy.style.top = pos.top + this.speed + 'px';
+                    break;
+
+                case 'left':
+                    this.enemy.style.left = pos.left - this.speed + 'px';
+                    break;
+                case 'right':
+                    this.enemy.style.left = pos.left + this.speed + 'px';
+                    break;
+                default:
+                    break;
+            }
+            const _ = await new Promise(window.requestAnimationFrame(this.Animation.bind(this, to[index], Counter)));
+        }, 1200);
     }
 }

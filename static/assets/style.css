@@ -23,6 +23,7 @@
     z-index: 1;
     top: 0px;
     left: 0px;
+    transition: all 1s ease-in-out;
 }
 
 .elem {
