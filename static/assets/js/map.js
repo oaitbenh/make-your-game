@@ -9,7 +9,7 @@ export function create_map(game_container) {
             count++
             if (y % 2 == 1 && x % 2 == 1) {
                 elem.classList.add('wall');
-            } else if (Math.random() < 0.4 && (y > 1 || x > 1)) {
+            } else if (Math.random() < 0.3 && (y > 1 || x > 1)) {
                 elem.classList.add('box');
             } else {
                 elem.classList.add('grass');

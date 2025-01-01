@@ -6,43 +6,34 @@ export class Enemy {
     live;
     game;
     target;
+    direction;
     constructor(container, box) {
         const pos = box.getBoundingClientRect();
         const enemy = document.createElement('img');
         this.enemy = enemy;
         this.game = container;
+        this.target = this.game.querySelector('.player');
         this.speed = pos.width;
-        console.log(this.speed);
-
+        this.live = true;
         enemy.style.top = pos.top + 'px';
         enemy.style.left = pos.left + 'px';
         enemy.src = "/static/assets/img/enemies/down-1.png";
         enemy.classList.add('enemy');
         container.appendChild(enemy);
     }
-
-    // move() {
-    //     Counter++
-    //     this.enemy.src = `/static/assets/img/enemies/down-${Counter}.png`
-    //     if (Counter > 2) {
-    //         Counter = 0 ;
-    //         return
-    //     }  
-    //     requestAnimationFrame(this.move.bind(this))
-    // }
-    // animation
+    // Animate enemies
     Animation(direction, Counter) {
         if (Counter != 60) {
             Counter++;
             if (Counter / 10 % 1 == 0) {
-                this.enemy.src = `/static/assets/img/enemies/${direction ? direction : 'down'}-${+Counter / 10 % 3 + 1}.png`;
+                this.enemy.src = `/static/assets/img/enemies/down-${+Counter / 10 % 3 + 1}.png`;
             }
             requestAnimationFrame(this.Animation.bind(this, direction, Counter));
         }
         Counter = 0;
         return;
     }
-    // can move Method
+    // enemies can move to any direction
     can_move() {
         let MoveTo = []
         let elems = this.game.querySelectorAll(".elem");
@@ -64,33 +55,41 @@ export class Enemy {
         if (+Pos / 21 != 0 && elems[+Pos + 21] && !(elems[+Pos + 21].classList.contains("wall") || elems[+Pos + 21].classList.contains("box"))) {
             MoveTo.push('down');
         }
-
         return MoveTo;
     }
     // random movement
     Randomize() {
-        setInterval(async () => {
-            let to = this.can_move();
-            let index = (Math.random() * 10).toFixed() % to.length;
-            let pos = this.enemy.getBoundingClientRect()
-            switch (to[index]) {
-                case 'up':
-                    this.enemy.style.top = pos.top - this.speed + 'px';
-                    break;
-                case 'down':
-                    this.enemy.style.top = pos.top + this.speed + 'px';
-                    break;
+        let interval = setInterval(async () => {
+            if (this.live) {
+                let to = this.can_move();
+                let index = (Math.random() * 10).toFixed() % to.length;
+                let pos = this.enemy.getBoundingClientRect();
+                if (to.includes(this.direction) && to.length <= 2) {
+                    to[index] = this.direction;
+                }
+                this.direction = to[index];
+                switch (to[index]) {
+                    case 'up':
+                        this.enemy.style.top = pos.top - this.speed + 'px';
+                        break;
+                    case 'down':
+                        this.enemy.style.top = pos.top + this.speed + 'px';
+                        break;
 
-                case 'left':
-                    this.enemy.style.left = pos.left - this.speed + 'px';
-                    break;
-                case 'right':
-                    this.enemy.style.left = pos.left + this.speed + 'px';
-                    break;
-                default:
-                    break;
+                    case 'left':
+                        this.enemy.style.left = pos.left - this.speed + 'px';
+                        break;
+                    case 'right':
+                        this.enemy.style.left = pos.left + this.speed + 'px';
+                        break;
+                    default:
+                        break;
+                }
+                window.requestAnimationFrame(this.Animation.bind(this, to[index], Counter));
+            } else {
+                this.enemy.remove()
+                clearInterval(interval);
             }
-            const _ = await new Promise(window.requestAnimationFrame(this.Animation.bind(this, to[index], Counter)));
-        }, 1200);
+        }, 1100);
     }
 }
